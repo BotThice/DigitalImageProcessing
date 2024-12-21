@@ -1,0 +1,5 @@
+22/12/2567
+    - fix bug that content part of picture lost using readline() 
+        after readline() read b'\x0A' because b'\x0A' is mean b'\n' it will stop reading
+        cause all pixel after b'\x0A' lost
+        - using read() instead 
