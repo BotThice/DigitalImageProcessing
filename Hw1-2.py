@@ -33,6 +33,22 @@ def convertToInt(data):
     content = [int(pixel) for pixel in content]
     return width, height, maxGreyLevel, content
 
+def prepareInputData(picPath):
+    data = readPicture(picPath)
+    data = convertToInt(data)
+    data = {'width': data[0], 
+            'height': data[1],
+            'maxGreyLevel': data[2],
+            'content': data[3]}
+    return data
+
+def prepareOutputData(inputPictureData, mappedGreyLevel):
+    data = {'width': inputPictureData['width'],
+                  'height': inputPictureData['height'],
+                  'maxGreyLevel': inputPictureData['maxGreyLevel'],
+                  'content': [mappedGreyLevel[pixel] for pixel in inputPictureData['content']]}
+    return data
+
 def writePicture(picPath, data):
     width = data['width']
     height = data['height']
@@ -46,35 +62,41 @@ def writePicture(picPath, data):
     pic.write(bytearray(content))
     pic.close()
 
-inputPicture = "Cameraman.pgm"
-inputPictureData = readPicture(inputPicture)
-inputPictureData = convertToInt(inputPictureData)
-inputPictureData = {'width': inputPictureData[0], 
-                    'height': inputPictureData[1],
-                    'maxGreyLevel': inputPictureData[2],
-                    'content': inputPictureData[3]}
+def showBothHistrograms(inputHistrogram, eqHistrogram):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    # Plot the original histogram
+    ax1.plot(list(inputHistrogram.keys()), list(inputHistrogram.values()))
+    ax1.set_title('Original Histogram')
 
-inputHistrogram = histrogram.histrogram(inputPictureData['maxGreyLevel'],
-                                        inputPictureData['content'])
-result = histrogram.histrogramEqualization(inputPictureData)
-eqHistrogram, mappedGreyLevel = result
+    # Plot the equalized histogram
+    ax2.plot(list(eqHistrogram.keys()), list(eqHistrogram.values()))
+    ax2.set_title('Equalized Histogram')
 
-outPicture = "equalizedCameraman.pgm"
-outPictureData = {'width': inputPictureData['width'],
-                  'height': inputPictureData['height'],
-                  'maxGreyLevel': inputPictureData['maxGreyLevel'],
-                  'content': [mappedGreyLevel[pixel] for pixel in inputPictureData['content']]}
-writePicture(outPicture, outPictureData)
+    # Show the plots
+    plt.show()
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+picture1 = "inputPictures/Cameraman.pgm"
+picture1Data = prepareInputData(picture1)
 
-# Plot the original histogram
-ax1.plot(list(inputHistrogram.keys()), list(inputHistrogram.values()))
-ax1.set_title('Original Histogram')
+# inputHistrogram = histrogram.histrogram(picture1Data['maxGreyLevel'],picture1Data['content'])
 
-# Plot the equalized histogram
-ax2.plot(list(eqHistrogram.keys()), list(eqHistrogram.values()))
-ax2.set_title('Equalized Histogram')
+result1 = histrogram.histrogramEqualization(picture1Data)
+eqHistrogram1, mappedGreyLevel1 = result1
 
-# Show the plots
-plt.show()
+outPic1 = "outputPictures/equalizedCameraman.pgm"
+outPic1Data = prepareOutputData(picture1Data, mappedGreyLevel1)
+writePicture(outPic1, outPic1Data)
+
+# showBothHistrograms(inputHistrogram, eqHistrogram)
+
+picture2 = "inputPictures/SEM256_256.pgm"
+picture2Data = prepareInputData(picture2)
+
+result2 = histrogram.histrogramEqualization(picture2Data)
+eqHistrogram2, mappedGreyLevel2 = result2
+
+outPic2 = "outputPictures/equalizedSEM256_256.pgm"
+outPic2Data = prepareOutputData(picture2Data, mappedGreyLevel2)
+writePicture(outPic2, outPic2Data)
+
+
