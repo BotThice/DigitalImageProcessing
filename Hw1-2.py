@@ -75,10 +75,9 @@ def showBothHistrograms(inputHistrogram, eqHistrogram):
     # Show the plots
     plt.show()
 
+# picture 1
 picture1 = "inputPictures/Cameraman.pgm"
 picture1Data = prepareInputData(picture1)
-
-# inputHistrogram = histrogram.histrogram(picture1Data['maxGreyLevel'],picture1Data['content'])
 
 result1 = histrogram.histrogramEqualization(picture1Data)
 eqHistrogram1, mappedGreyLevel1 = result1
@@ -87,8 +86,10 @@ outPic1 = "outputPictures/equalizedCameraman.pgm"
 outPic1Data = prepareOutputData(picture1Data, mappedGreyLevel1)
 writePicture(outPic1, outPic1Data)
 
-# showBothHistrograms(inputHistrogram, eqHistrogram)
+pic1Histrogram = histrogram.histrogram(picture1Data['maxGreyLevel'],picture1Data['content'])
+showBothHistrograms(pic1Histrogram, eqHistrogram1)
 
+# picture 2
 picture2 = "inputPictures/SEM256_256.pgm"
 picture2Data = prepareInputData(picture2)
 
@@ -99,4 +100,6 @@ outPic2 = "outputPictures/equalizedSEM256_256.pgm"
 outPic2Data = prepareOutputData(picture2Data, mappedGreyLevel2)
 writePicture(outPic2, outPic2Data)
 
+pic2Histrogram = histrogram.histrogram(picture2Data['maxGreyLevel'],picture2Data['content'])
+showBothHistrograms(pic2Histrogram, eqHistrogram2)
 

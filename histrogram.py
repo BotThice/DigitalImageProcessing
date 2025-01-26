@@ -60,3 +60,10 @@ def initialDic(maxKey) :
     for key in range (maxKey + 1) :
         dic[key] = 0
     return dic
+
+def mapColor(img, mappedGreyLevel):
+    newImg = {'width': img['width'],
+                  'height': img['height'],
+                  'maxGreyLevel': img['maxGreyLevel'],
+                  'content': [mappedGreyLevel[pixel] for pixel in img['content']]}
+    return newImg
