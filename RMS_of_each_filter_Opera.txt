@@ -1,0 +1,17 @@
+RMS of 3*3 median filter Opera.pgm : 0.06245455728978126
+RMS of 5*5 median filter Opera.pgm : 0.06526739539678403
+RMS of 9*9 median filter Opera.pgm : 0.07463077630178695
+
+RMS of guassian filter D0 = 20  Opera.pgm : 0.11642574444690079
+RMS of guassian filter D0 = 50  Opera.pgm : 0.07928898030946888
+RMS of guassian filter D0 = 100 Opera.pgm : 0.07327684377272675
+
+RMS of alpha trim kernel 5*5 alpha = 3 Opera.pgm : 0.06847293311269902
+RMS of alpha trim kernel 5*5 alpha = 5 Opera.pgm : 0.06738597751868952
+RMS of alpha trim kernel 5*5 alpha = 7 Opera.pgm : 0.06664432071811063
+RMS of alpha trim kernel 5*5 alpha = 11 Opera.pgm : 0.06485783247387367
+
+RMS of alpha trim kernel 5*5 alpha = 9 Opera.pgm : 0.065550718885319
+RMS of alpha trim kernel 7*7 alpha = 9 Opera.pgm : 0.07478077683137692
+RMS of alpha trim kernel 9*9 alpha = 9 Opera.pgm : 0.08161869359098817
+RMS of alpha trim kernel 11*11 alpha = 9 Opera.pgm : 0.0872938105615619

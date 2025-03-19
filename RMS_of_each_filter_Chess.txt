@@ -1,0 +1,17 @@
+RMS of 3*3 median filter Chess.pgm : 0.07603784990720479
+RMS of 5*5 median filter Chess.pgm : 0.07497973006734944
+RMS of 9*9 median filter Chess.pgm : 0.08451660892566541
+
+RMS of guassian filter D0 = 20  Chess.pgm : 0.201599663904922
+RMS of guassian filter D0 = 50  Chess.pgm : 0.145207014975938
+RMS of guassian filter D0 = 100 Chess.pgm : 0.10943212996842898
+
+RMS of alpha trim kernel 5*5 alpha = 3 Chess.pgm : 0.09233515005924148
+RMS of alpha trim kernel 5*5 alpha = 5 Chess.pgm : 0.08834067856214753
+RMS of alpha trim kernel 5*5 alpha = 7 Chess.pgm : 0.08487059185290342
+RMS of alpha trim kernel 5*5 alpha = 11 Chess.pgm : 0.07494728873566178
+
+RMS of alpha trim kernel 5*5 alpha = 9 Chess.pgm : 0.07953512176961448
+RMS of alpha trim kernel 7*7 alpha = 9 Chess.pgm : 0.09900786363899416
+RMS of alpha trim kernel 9*9 alpha = 9 Chess.pgm : 0.11307807801990079
+RMS of alpha trim kernel 11*11 alpha = 9 Chess.pgm : 0.12494687817982629

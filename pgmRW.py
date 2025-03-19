@@ -1,4 +1,3 @@
-
 def prepareInputData(picPath):
     def readPicture(picPath):
         pic = open(picPath, "rb")
@@ -38,6 +37,13 @@ def prepareInputData(picPath):
             'height': data[1],
             'maxGreyLevel': data[2],
             'content': data[3]}
+    return data
+
+def prepareOutputData(width, height, maxGreyLevel, content):
+    data = {'width': width, 
+            'height': height,
+            'maxGreyLevel': maxGreyLevel,
+            'content': content}
     return data
 
 def writePicture(picPath, data):
