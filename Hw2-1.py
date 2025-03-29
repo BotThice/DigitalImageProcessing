@@ -380,7 +380,7 @@ fftImg = np.fft.fftshift(fftImg)
 # onlyAmpImg, onlyPhaseImg = reconstructFFTwith1Infomation(fftImg)
 # pgmRW.writePicture("./outputPictures/onlyAmpCross.pgm", onlyAmpImg)
 # pgmRW.writePicture("./outputPictures/onlyPhaseCross.pgm", onlyPhaseImg)
-# # # part 1.6
+# # part 1.6
 # opera = pgmRW.prepareInputData("./inputPictures/OperaHousePGM_256_256.pgm")
 # fftOpera = np.fft.fft2(make2Dlist(opera['content'], opera['height'], opera['width']))
 # fftOpera = np.fft.fftshift(fftOpera)
@@ -398,7 +398,7 @@ fftImg = np.fft.fftshift(fftImg)
 # pgmRW.writePicture("./outputPictures/paddedChess.pgm", paddedChess)
 # pgmRW.writePicture("./outputPictures/timeConvolutedChess.pgm", meanTimeDomainConvolution(paddedChess, kernel, int(kernelOrigin)))
 
-# # b) filter in freq domain with same kernel
+# # # b) filter in freq domain with same kernel
 # convolutedFreq = meanFreqDomainConvolution(chess, kernel)
 # pgmRW.writePicture("./outputPictures/freqConvolutedChess.pgm", convolutedFreq)
 
@@ -524,6 +524,17 @@ def alphaTrimFilter(img, kernelSize, alpha, name):
     pgmRW.writePicture("./outputPictures/alphaTrim/" + name + ".pgm", trimmed)
     return trimmed
 
+def RMS(noiseFree, clean):
+    # noise - clean for compare clean picture error with noise picture
+    noiseFreeContent = noiseFree['content']
+    cleanContent = clean['content']
+    n = len(noiseFreeContent)
+    sum = 0
+
+    for i in range(n):
+        sum += (noiseFreeContent[i] - cleanContent[i]) ** 2
+
+    return math.sqrt(sum) / n
 
 # 2.1 ideal filter and non-ideal
 fftCross = fftImg
@@ -537,103 +548,92 @@ guassianLPF(fftCross.copy(), 10, "crossLPFD10")
 guassianLPF(fftCross.copy(), 25, "crossLPFD25")
 guassianLPF(fftCross.copy(), 50, "crossLPFD50")
 
-def RMS(noiseFree, clean):
-    # noise - clean for compare clean picture error with noise picture
-    noiseFreeContent = noiseFree['content']
-    cleanContent = clean['content']
-    n = len(noiseFreeContent)
-    sum = 0
-
-    for i in range(n):
-        sum += (noiseFreeContent[i] - cleanContent[i]) ** 2
-
-    return math.sqrt(sum) / n
 
 # 2.2 
-file = open ("RMS_of_each_filter_Chess.txt", "w")
-# Chess picture
-noiseChess = pgmRW.prepareInputData("./inputPictures/Chess_noise.pgm")
-noiseFreeChess = pgmRW.prepareInputData("./inputPictures/Chess.pgm")
+# file = open ("RMS_of_each_filter_Chess.txt", "w")
+# # Chess picture
+# noiseChess = pgmRW.prepareInputData("./inputPictures/Chess_noise.pgm")
+# noiseFreeChess = pgmRW.prepareInputData("./inputPictures/Chess.pgm")
 
-    # median part
-medianChess3 = medianFilter(noiseChess.copy(), (3, 3))
-medianChess5 = medianFilter(noiseChess.copy(), (5, 5))
-medianChess9 = medianFilter(noiseChess.copy(), (9, 9))
+#     # median part
+# medianChess3 = medianFilter(noiseChess.copy(), (3, 3))
+# medianChess5 = medianFilter(noiseChess.copy(), (5, 5))
+# medianChess9 = medianFilter(noiseChess.copy(), (9, 9))
 
-pgmRW.writePicture("./outputPictures/median/chess3.pgm", medianChess3)
-pgmRW.writePicture("./outputPictures/median/chess5.pgm", medianChess5)
-pgmRW.writePicture("./outputPictures/median/chess9.pgm", medianChess9)
+# pgmRW.writePicture("./outputPictures/median/chess3.pgm", medianChess3)
+# pgmRW.writePicture("./outputPictures/median/chess5.pgm", medianChess5)
+# pgmRW.writePicture("./outputPictures/median/chess9.pgm", medianChess9)
 
-file.write("RMS of 3*3 median filter Chess.pgm : " + str(RMS(noiseFreeChess.copy(), medianChess3)))
-file.write("\nRMS of 5*5 median filter Chess.pgm : " + str(RMS(noiseFreeChess.copy(), medianChess5)))
-file.write("\nRMS of 9*9 median filter Chess.pgm : " + str(RMS(noiseFreeChess.copy(), medianChess9)))
+# file.write("RMS of 3*3 median filter Chess.pgm : " + str(RMS(noiseFreeChess.copy(), medianChess3)))
+# file.write("\nRMS of 5*5 median filter Chess.pgm : " + str(RMS(noiseFreeChess.copy(), medianChess5)))
+# file.write("\nRMS of 9*9 median filter Chess.pgm : " + str(RMS(noiseFreeChess.copy(), medianChess9)))
 
-del medianChess3
-del medianChess5
-del medianChess9
+# del medianChess3
+# del medianChess5
+# del medianChess9
 
-    # guassian part
-noiseChess2D = make2Dlist(noiseChess['content'], noiseChess['height'], noiseChess['width'])
-fftNoiseChess = np.fft.fft2(noiseChess2D)
-fftNoiseChess = np.fft.fftshift(fftNoiseChess)
+#     # guassian part
+# noiseChess2D = make2Dlist(noiseChess['content'], noiseChess['height'], noiseChess['width'])
+# fftNoiseChess = np.fft.fft2(noiseChess2D)
+# fftNoiseChess = np.fft.fftshift(fftNoiseChess)
 
-cutoff20 = guassianLPF(fftNoiseChess.copy(), 20, "chessLPFD20")
-cutoff50 = guassianLPF(fftNoiseChess.copy(), 50, "chessLPFD50")
-cutoff100 = guassianLPF(fftNoiseChess.copy(), 100, "chessLPFD100")
+# cutoff20 = guassianLPF(fftNoiseChess.copy(), 20, "chessLPFD20")
+# cutoff50 = guassianLPF(fftNoiseChess.copy(), 50, "chessLPFD50")
+# cutoff100 = guassianLPF(fftNoiseChess.copy(), 100, "chessLPFD100")
 
-file.write("\n\nRMS of guassian filter D0 = 20  Chess.pgm : " + str(RMS(noiseFreeChess.copy(), cutoff20)))
-file.write("\nRMS of guassian filter D0 = 50  Chess.pgm : " + str(RMS(noiseFreeChess.copy(), cutoff50)))
-file.write("\nRMS of guassian filter D0 = 100 Chess.pgm : " + str(RMS(noiseFreeChess.copy(), cutoff100)))
+# file.write("\n\nRMS of guassian filter D0 = 20  Chess.pgm : " + str(RMS(noiseFreeChess.copy(), cutoff20)))
+# file.write("\nRMS of guassian filter D0 = 50  Chess.pgm : " + str(RMS(noiseFreeChess.copy(), cutoff50)))
+# file.write("\nRMS of guassian filter D0 = 100 Chess.pgm : " + str(RMS(noiseFreeChess.copy(), cutoff100)))
 
-del fftNoiseChess 
-del cutoff20
-del cutoff50
-del cutoff100
+# del fftNoiseChess 
+# del cutoff20
+# del cutoff50
+# del cutoff100
 
-    # alpha trim part
-        # try with same kernel, difference alpha
-alpha553 = alphaTrimFilter(noiseChess.copy(), (5, 5), 3, "chess553")
-alpha555 = alphaTrimFilter(noiseChess.copy(), (5, 5), 5, "chess555")
-alpha557 = alphaTrimFilter(noiseChess.copy(), (5, 5), 7, "chess557")
-alpha5511 = alphaTrimFilter(noiseChess.copy(), (5, 5), 11, "chess5511")
+#     # alpha trim part
+#         # try with same kernel, difference alpha
+# alpha553 = alphaTrimFilter(noiseChess.copy(), (5, 5), 3, "chess553")
+# alpha555 = alphaTrimFilter(noiseChess.copy(), (5, 5), 5, "chess555")
+# alpha557 = alphaTrimFilter(noiseChess.copy(), (5, 5), 7, "chess557")
+# alpha5511 = alphaTrimFilter(noiseChess.copy(), (5, 5), 11, "chess5511")
 
-file.write("\n\nRMS of alpha trim kernel 5*5 alpha = 3 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha553)))
-file.write("\nRMS of alpha trim kernel 5*5 alpha = 5 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha555)))
-file.write("\nRMS of alpha trim kernel 5*5 alpha = 7 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha557)))
-file.write("\nRMS of alpha trim kernel 5*5 alpha = 11 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha5511)))
+# file.write("\n\nRMS of alpha trim kernel 5*5 alpha = 3 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha553)))
+# file.write("\nRMS of alpha trim kernel 5*5 alpha = 5 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha555)))
+# file.write("\nRMS of alpha trim kernel 5*5 alpha = 7 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha557)))
+# file.write("\nRMS of alpha trim kernel 5*5 alpha = 11 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha5511)))
 
-del alpha553
-del alpha555
-del alpha557
-del alpha5511
+# del alpha553
+# del alpha555
+# del alpha557
+# del alpha5511
 
-        # try with difference kernel size, same alpha
-alpha559 = alphaTrimFilter(noiseChess.copy(), (5, 5), 9, "chess559")
-alpha779 = alphaTrimFilter(noiseChess.copy(), (7, 7), 9, "chess779")
-alpha999 = alphaTrimFilter(noiseChess.copy(), (9, 9), 9, "chess999")
-alpha11119 = alphaTrimFilter(noiseChess.copy(), (11, 11), 9, "chess11119")
+#         # try with difference kernel size, same alpha
+# alpha559 = alphaTrimFilter(noiseChess.copy(), (5, 5), 9, "chess559")
+# alpha779 = alphaTrimFilter(noiseChess.copy(), (7, 7), 9, "chess779")
+# alpha999 = alphaTrimFilter(noiseChess.copy(), (9, 9), 9, "chess999")
+# alpha11119 = alphaTrimFilter(noiseChess.copy(), (11, 11), 9, "chess11119")
 
-file.write("\n\nRMS of alpha trim kernel 5*5 alpha = 9 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha559)))
-file.write("\nRMS of alpha trim kernel 7*7 alpha = 9 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha779)))
-file.write("\nRMS of alpha trim kernel 9*9 alpha = 9 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha999)))
-file.write("\nRMS of alpha trim kernel 11*11 alpha = 9 Chess.pgm : " 
-           + str(RMS(noiseFreeChess.copy(), alpha11119)))
+# file.write("\n\nRMS of alpha trim kernel 5*5 alpha = 9 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha559)))
+# file.write("\nRMS of alpha trim kernel 7*7 alpha = 9 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha779)))
+# file.write("\nRMS of alpha trim kernel 9*9 alpha = 9 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha999)))
+# file.write("\nRMS of alpha trim kernel 11*11 alpha = 9 Chess.pgm : " 
+#            + str(RMS(noiseFreeChess.copy(), alpha11119)))
 
-del alpha559
-del alpha779
-del alpha999
-del alpha11119
+# del alpha559
+# del alpha779
+# del alpha999
+# del alpha11119
 
-del noiseChess
-del noiseFreeChess
-file.close()
+# del noiseChess
+# del noiseFreeChess
+# file.close()
 
 
 # Opera picture
@@ -683,6 +683,7 @@ alpha555Opera = alphaTrimFilter(noiseOpera.copy(), (5, 5), 5, "Opera555")
 alpha557Opera = alphaTrimFilter(noiseOpera.copy(), (5, 5), 7, "Opera557")
 alpha5511Opera = alphaTrimFilter(noiseOpera.copy(), (5, 5), 11, "Opera5511")
 
+
 file.write("\n\nRMS of alpha trim kernel 5*5 alpha = 3 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha553Opera)))
 file.write("\nRMS of alpha trim kernel 5*5 alpha = 5 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha555Opera)))
 file.write("\nRMS of alpha trim kernel 5*5 alpha = 7 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha557Opera)))
@@ -698,11 +699,13 @@ alpha559Opera = alphaTrimFilter(noiseOpera.copy(), (5, 5), 9, "Opera559")
 alpha779Opera = alphaTrimFilter(noiseOpera.copy(), (7, 7), 9, "Opera779")
 alpha999Opera = alphaTrimFilter(noiseOpera.copy(), (9, 9), 9, "Opera999")
 alpha11119Opera = alphaTrimFilter(noiseOpera.copy(), (11, 11), 9, "Opera11119")
+alpha11150Opera = alphaTrimFilter(noiseOpera.copy(), (11, 11), 50, "Opera11150")
 
 file.write("\n\nRMS of alpha trim kernel 5*5 alpha = 9 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha559Opera)))
 file.write("\nRMS of alpha trim kernel 7*7 alpha = 9 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha779Opera)))
 file.write("\nRMS of alpha trim kernel 9*9 alpha = 9 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha999Opera)))
 file.write("\nRMS of alpha trim kernel 11*11 alpha = 9 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha11119Opera)))
+file.write("\nRMS of alpha trim kernel 11*11 alpha = 50 Opera.pgm : " + str(RMS(noiseFreeOpera.copy(), alpha11150Opera)))
 
 del alpha559Opera
 del alpha779Opera
